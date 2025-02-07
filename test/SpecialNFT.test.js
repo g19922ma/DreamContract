@@ -5,10 +5,13 @@ describe("SpecialNFT", function () {
   let specialNFT, owner, addr1, addr2, addrs;
 
   beforeEach(async function () {
+    // サインアーケータを取得
     [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
     const SpecialNFTFactory = await ethers.getContractFactory("SpecialNFT");
+    // コントラクトのデプロイ
     specialNFT = await SpecialNFTFactory.deploy();
-    await specialNFT.deployed();
+    // ethers v6 では deployed() の代わりに waitForDeployment() を使用
+    await specialNFT.waitForDeployment();
   });
 
   describe("Deployment", function () {
@@ -20,9 +23,9 @@ describe("SpecialNFT", function () {
 
   describe("Minting", function () {
     it("Should mint a token and assign it to the owner", async function () {
-      const tx = await specialNFT.mint(owner.address, 1);
+      const tx = await specialNFT.mint(owner.address, 1); // 1 分後にイベント発行可能
       await tx.wait();
-      // tokenId は最初の mint なら 1 になる
+      // 最初の mint なら tokenId は 1
       expect(await specialNFT.ownerOf(1)).to.equal(owner.address);
       expect(await specialNFT.balanceOf(owner.address)).to.equal(1);
     });
@@ -31,14 +34,14 @@ describe("SpecialNFT", function () {
       const tx = await specialNFT.mint(owner.address, 1);
       await tx.wait();
       const tokenURI = await specialNFT.tokenURI(1);
-      // _baseURI() で指定した URL に tokenId が連結される
+      // _baseURI() で指定した "https://qurihara.github.io/nft1/md/" に tokenId が連結される
       expect(tokenURI).to.equal("https://qurihara.github.io/nft1/md/1");
     });
 
     it("Should emit Transfer event on mint", async function () {
       await expect(specialNFT.mint(owner.address, 1))
         .to.emit(specialNFT, "Transfer")
-        .withArgs(ethers.constants.AddressZero, owner.address, 1);
+        .withArgs(ethers.ZeroAddress, owner.address, 1);
     });
   });
 
@@ -65,7 +68,7 @@ describe("SpecialNFT", function () {
 
   describe("TimeElapsed Event Triggering", function () {
     beforeEach(async function () {
-      // xMinutes を 1 に指定して mint (60 秒後にイベント発行可能)
+      // tokenId 1 を mint (1 分後にイベント発行可能)
       await specialNFT.mint(owner.address, 1);
     });
 
@@ -75,7 +78,7 @@ describe("SpecialNFT", function () {
     });
 
     it("Should emit TimeElapsed event after specified time has elapsed", async function () {
-      // 61 秒進める
+      // EVM の時間を 61 秒進める
       await ethers.provider.send("evm_increaseTime", [61]);
       await ethers.provider.send("evm_mine");
 
@@ -85,12 +88,12 @@ describe("SpecialNFT", function () {
     });
 
     it("Should revert triggerTimeElapsed if event already emitted", async function () {
-      // 時間を進めて初回はイベント発行
+      // 時間を進めて初回呼び出しでイベント発行
       await ethers.provider.send("evm_increaseTime", [61]);
       await ethers.provider.send("evm_mine");
       await specialNFT.triggerTimeElapsed(1);
 
-      // すでにイベント発行済みなので再度呼び出すと revert する
+      // すでにイベント発行済みのため再度呼び出すと revert する
       await expect(specialNFT.triggerTimeElapsed(1))
         .to.be.revertedWith("Event already emitted");
     });

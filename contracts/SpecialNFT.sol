@@ -22,6 +22,11 @@ contract SpecialNFT is ERC721 {
 
     constructor() ERC721("SpecialNFT", "SNFT") {}
 
+    // _baseURI をオーバーライドして、ベースURI を返す
+    function _baseURI() internal pure override returns (string memory) {
+        return "https://qurihara.github.io/nft1/md/";
+    }
+    
     /**
      * @notice NFT を mint する。mint 時に x（分）を指定する
      * @param recipient NFT の受取先アドレス
