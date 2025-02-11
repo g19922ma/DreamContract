@@ -4,7 +4,10 @@
     "hardhat": "^2.22.17"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.9.3"
+    "@openzeppelin/contracts": "^4.9.3",
+    "axios": "^1.7.9",
+    "install": "^0.13.0",
+    "npm": "^11.1.0"
   },
   "scripts": {
     "compile:abi": "npx hardhat compile && node scripts/extractAbi.js"
