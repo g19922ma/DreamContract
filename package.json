@@ -7,6 +7,7 @@
     "@openzeppelin/contracts": "^4.9.3",
     "axios": "^1.7.9",
     "install": "^0.13.0",
+    "node-aes-cmac": "^0.1.1",
     "npm": "^11.1.0"
   },
   "scripts": {
