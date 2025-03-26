@@ -16,7 +16,7 @@ async function main() {
   const specialNFT = SpecialNFT.attach(contractAddress);
 
   // 例として、mint 時に2分後に TimeElapsed イベント発行可能とする
-  const xMinutes = 1;
+  const xMinutes = 5;
   const mintTx = await specialNFT.mint(signer.address, xMinutes);
   const receipt = await mintTx.wait();
 
