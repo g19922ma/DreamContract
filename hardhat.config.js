@@ -25,6 +25,7 @@ module.exports = {
     polygonAmoy: {
       url: `https://polygon-amoy.g.alchemy.com/v2/${ALCHEMY_API_KEY}`,
       accounts: [ACCOUNT_PRIVATE_KEY],
+      gasPrice: 25000000000,  // 25 GWEI
     },
   },
   etherscan: {

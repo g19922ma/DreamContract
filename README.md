@@ -115,7 +115,7 @@ scripts/mintSpecialNFT.js を見てみましょう。
 npx hardhat run scripts/listen.js --network polygonAmoy
 ```
 
-としてみてください。1分後から1分おきに、
+としてみてください。1分おきに、
 ```shell
 Error for token ID 0: execution reverted: Token does not exist
 Error for token ID 1: execution reverted: Token does not exist
@@ -134,20 +134,18 @@ Error for token ID 10: execution reverted: Token does not exist
 これは、定期的に現在デプロイしたNFTのmint状況、そして有効か無効かを調べるコードです。まだ一つもmintしていないので、このような表示になります。
 この状態で別のターミナルを開いて、（Cursorならターミナルウインドウの右の「＋」ボタンを押せばOK。）mintしてみましょう。
 
-
-まずローカルネットでテストします。
-
-```shell
-npx hardhat run scripts/mintSpecialNFT.js 
-```
-
-次にテストネットにデプロイします。
+ローカルネットでのでテストは省略します。
+直接テストネットにデプロイします。
 
 ```shell
 npx hardhat run scripts/mintSpecialNFT.js --network polygonAmoy
 ```
 
-
+```shell
+（前略）
+Minted NFT with tokenId: 1
+```
+tokenID 1 で期間限定NFTが発行されました。
 あとは先程実行した　scripts/listen.js　のターミナルを眺めて待ちます。
 
 ```shell
@@ -174,6 +172,7 @@ token ID 1が発行されましたが、まだ有効期限切れしてないの�
   triggerTimeElapsed executed successfully for token ID: 1
   TimeElapsed event captured:
   Token ID: 1
+  Webhook triggered: 200
   Error for token ID 2: execution reverted: Token does not exist
   Error for token ID 3: execution reverted: Token does not exist
   Error for token ID 4: execution reverted: Token does not exist
@@ -185,7 +184,7 @@ token ID 1が発行されましたが、まだ有効期限切れしてないの�
   Error for token ID 10: execution reverted: Token does not exist
 ```
 
-5分後、token ID 1の有効期限が切れて、それをlisten.jsが捉えることができました。プログラムを改造すれば、有効期限が切れたらメール通知したり、物理的な鍵を施錠したりといったことが行えます。
+5分後、token ID 1の有効期限が切れて、「有効期限が切れたよ！」というイベントが発行されました。そしてそれをlisten.jsが捉えることができました。プログラムを改造すれば、有効期限が切れたらメール通知したり、物理的な鍵を施錠したりといったことが行えます。
 
 地味なんですけど、実行はここまで。これから、今行ったことの背後にあることについて解説していきます。
 

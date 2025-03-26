@@ -53,11 +53,10 @@ async function main() {
 
   console.log("Listening for events and checking condition for token IDs 0 to 10 every minute...");
 
-  // 1分ごとにトークンID 0～10 について条件チェックおよび実行
-  setInterval(async () => {
+  // チェック処理を関数として定義
+  async function checkTokens() {
     for (let tokenId = 0; tokenId <= 10; tokenId++) {
       try {
-        // view 関数 isTimeElapsed を呼び出して条件をチェック（ガス代はかかりません）
         const conditionMet = await contract.isTimeElapsed(tokenId);
         console.log(`Check token ID ${tokenId}:`, conditionMet);
         if (conditionMet) {
@@ -71,7 +70,13 @@ async function main() {
         console.error(`Error for token ID ${tokenId}:`, error.message);
       }
     }
-  }, 60 * 1000); // 60秒ごとに実行
+  }
+
+  // 最初の実行をすぐに行う
+  await checkTokens();
+
+  // その後1分おきに実行
+  setInterval(checkTokens, 60 * 1000);
 }
 
 main().catch((error) => {
